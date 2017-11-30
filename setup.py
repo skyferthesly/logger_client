@@ -13,9 +13,9 @@ setup(name='logger_client',
       author='Skyler Moore-Firkins',
       author_email='brehon1104@gmail.com',
 
-      setup_requires=['pytest',
-                      'requests'
-                      ]
+      install_requires=['pytest',
+                        'requests'
+                        ]
       )
 
 # test_suite=''
