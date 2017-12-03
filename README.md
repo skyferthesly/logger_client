@@ -26,7 +26,7 @@ designed to inform the user of how to use the app as well as how the
 server is responding.
 
 # Improvements
-Being able to send ar arbitrary amount of optional parameters would be a
+Being able to send an arbitrary amount of optional parameters would be a
 great feature for the next iteration.
 
 The client could also use some basic testing.
