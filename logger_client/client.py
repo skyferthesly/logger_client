@@ -5,10 +5,8 @@ from tkinter import Tk, Label, Button, Entry, Text, Frame, OptionMenu, StringVar
 
 
 class LoggerClient(object):
-    def __init__(self):
-        self.base_url = "http://127.0.0.1:5000/"
-        self.messages_endpoint = "%smessages/" % self.base_url
-        self.users_endpoint = "%susers/" % self.base_url
+    def __init__(self, messages_endpoint):
+        self.messages_endpoint = messages_endpoint
 
         # main window
         self.container = Tk()
@@ -30,8 +28,9 @@ class LoggerClient(object):
 
         var = StringVar(self.container)
         var.set("INFO")
-        self.message_type_listbox = OptionMenu(self.fields_frame, var, "INFO", "ERROR")
-        self.message_type_listbox.grid(row=1, column=0)
+        self.message_type_optionmenu = OptionMenu(self.fields_frame, var, "INFO", "ERROR",
+                                                  command=self.set_message_type)
+        self.message_type_optionmenu.grid(row=1, column=0)
 
         self.message_textbox = Entry(self.fields_frame, width=51)
         self.message_textbox.grid(row=1, column=1)
@@ -77,6 +76,11 @@ class LoggerClient(object):
         self.response_textbox = Text(self.response_frame, width=47, height=2)
         self.response_textbox.grid(row=1, column=0)
 
+        self.message_type = None
+
+    def set_message_type(self, value):
+        self.message_type = value
+
     def clear_response(self):
         self.response_textbox.delete(self.response_textbox.index("end-1c linestart"), END)
 
@@ -86,9 +90,6 @@ class LoggerClient(object):
         if not username or not password:
             return None
         return username, password
-
-    def get(self):
-        return requests.get(self.base_url).text
 
     def post_message(self, data):
         return requests.post(self.messages_endpoint, auth=data.pop('auth'), data=json.dumps(data))
@@ -111,6 +112,7 @@ class LoggerClient(object):
 
         payload = dict()
         payload['message'] = message
+        payload['message_type'] = self.message_type
         payload['auth'] = auth
         if email:
             payload['email'] = email
@@ -132,11 +134,9 @@ class LoggerClient(object):
                 self.email_textbox.insert(END, self.email_textbox_default)
             elif res.status_code == 500:
                 self.response_textbox.insert(END,
-                                             "The server didn't understand how to handle the request. Please contact your system administrator")
+                                             "The server didn't understand how to handle the request. Please contact your system administrator.")
+            else:
+                self.response_textbox.insert(END, "Unknown response code: %s" % res.status_code)
 
     def run(self):
         self.container.mainloop()
-
-
-client = LoggerClient()
-client.run()
