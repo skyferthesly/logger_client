@@ -138,5 +138,20 @@ class LoggerClient(object):
             else:
                 self.response_textbox.insert(END, "Unknown response code: %s" % res.status_code)
 
-    def run(self):
-        self.container.mainloop()
+    @classmethod
+    def run(cls):
+        import os
+        import configparser
+        env_uri = os.environ.get('SIMPLIFIED_LOGGER_SERVER_URI')
+        env_messages_ep = os.environ.get('MESSAGES_ENDPOINT')
+        if env_uri and env_messages_ep:
+            base_url = os.environ['SIMPLIFIED_LOGGER_SERVER_URI']
+            messages_endpoint = os.environ['MESSAGES_ENDPOINT']
+        else:
+            config = configparser.ConfigParser()
+            config.read('config.ini')
+            base_url = config['DEFAULT'].get('SERVER_URI')
+            messages_endpoint = config['DEFAULT'].get("MESSAGES_ENDPOINT")
+
+        client = cls("%s%s" % (base_url, messages_endpoint))
+        client.container.mainloop()
