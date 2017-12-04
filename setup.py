@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(name='logger_client',
       packages=find_packages(exclude=['tests']),
-      version='0.22',
+      version='0.23',
       license='MIT',
 
       description='Gui client that accepts and sends user data to a configurable webservice',

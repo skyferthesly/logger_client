@@ -93,11 +93,13 @@ class LoggerClient(object):
 
     def post_message(self, data):
         try:
-            return requests.post(self.messages_endpoint, auth=data.pop('auth'), data=json.dumps(data))
+            auth = data.pop('auth')
+            data = json.dumps(data)
+            return requests.post(self.messages_endpoint, auth=auth, data=data)
         except MissingSchema:
             # TODO not sure why the default vars are sometimes not loaded. Must fix. Defaulting
             self.messages_endpoint = "http://127.0.0.1:5000/messages/"
-            return requests.post(self.messages_endpoint, auth=data.pop('auth'), data=json.dumps(data))
+            return requests.post(self.messages_endpoint, auth=auth, data=data)
 
     def send(self):
         self.clear_response()
