@@ -25,6 +25,12 @@ or not entering authentication information. The Response textbox is
 designed to inform the user of how to use the app as well as how the
 server is responding.
 
+# Issues
+When used as an external package, the default environment variables are not
+being set. This is possibly due to the `config.ini` reference being a
+relative path. When this happens, the client explicitly sets the default
+address.
+
 # Improvements
 Being able to send an arbitrary amount of optional parameters would be a
 great feature for the next iteration.

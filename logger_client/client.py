@@ -1,6 +1,6 @@
 import json
 import requests
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, MissingSchema
 from tkinter import Tk, Label, Button, Entry, Text, Frame, OptionMenu, StringVar, END
 
 
@@ -92,7 +92,12 @@ class LoggerClient(object):
         return username, password
 
     def post_message(self, data):
-        return requests.post(self.messages_endpoint, auth=data.pop('auth'), data=json.dumps(data))
+        try:
+            return requests.post(self.messages_endpoint, auth=data.pop('auth'), data=json.dumps(data))
+        except MissingSchema:
+            # TODO not sure why the default vars are sometimes not loaded. Must fix. Defaulting
+            self.messages_endpoint = "http://127.0.0.1:5000/messages/"
+            return requests.post(self.messages_endpoint, auth=data.pop('auth'), data=json.dumps(data))
 
     def send(self):
         self.clear_response()
